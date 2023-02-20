@@ -2,7 +2,7 @@ import { useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } fro
 import './MainWindow.css'
 import MultilevelMenus from '../../../MultiDropdown/MultilevelMenus/MultilevelMenu';
 import config, { menuItems } from '../../../../config';
-import { downloadFile, getHeightBetweenNavbarAndScreenBottom, uuidv4 } from '../../../../utils/utils';
+import { getHeightBetweenNavbarAndScreenBottom, uuidv4 } from '../../../../utils/utils';
 import { MenuItem } from '../../../../MenuItem';
 import { transpile } from 'typescript';
 import MultilineTextarea, { IMultilineTextarea } from '../MultilineTextarea/MultilineTextarea';
@@ -27,7 +27,7 @@ export default function MainWindow({ }: Props) {
     const consoleRef = useRef<HTMLUListElement>(null);
     const ref = useRef<HTMLDivElement>(null);
     const { saveConsole } = useContext(ConsoleContext);
-    const [currentFileContents, setCurrentFileContents] = useState<string>(config.defaultText);
+    const [currentFileContents, setCurrentFileContents] = useState<string>();
     const [consoleMessages, setConsoleMessages] = useState<IConsoleMessage[]>([]);
 
     function log(...args: any[]) {
@@ -107,10 +107,6 @@ export default function MainWindow({ }: Props) {
         if (item.id === 2) {
             run()
         }
-
-        if (item.id === 12) {
-            downloadFile(currentFileContents, "script.js")
-        }
     }
 
     function reset() {
@@ -141,14 +137,17 @@ export default function MainWindow({ }: Props) {
                 <Allotment>
                     <Allotment.Pane snap preferredSize={window.innerWidth / 7} minSize={window.innerWidth / 14}>
                         <div id="explorer" className="maximize">
-                            <Explorer items={
-                                currentUser?.rootFolder || [{
-                                    fileContents: 
-                                    "// Welcome to taskify!\n" + 
-                                    "console.log('app!');",
-                                    name: "index.js"
-                                }]
-                            } onClick={e => {
+                            <Explorer items=
+                            {
+                                testExplorerItems
+                                // currentUser?.rootFolder || [{
+                                //     fileContents: 
+                                //     "// Welcome to taskify!\n" + 
+                                //     "console.log('app!');",
+                                //     name: "index.js"
+                                // }]
+                            }
+                            onClick={e => {
                                 const item = e.item;
                                 if (isFile(item)) {
                                     setCurrentFileContents(item.fileContents)
